@@ -60,3 +60,78 @@ User.create({
 - Ele criam dados fakes, são muito populares para testes
 - Executável apenas por código
 - Jamais será utilizado em produção
+
+
+## EsLint, Prettier e editor de código
+
+Para veririficar se o nosso código está seguindo o padrão, instalamos o ESLint:
+```
+yarn add eslint -D
+```
+Para inicializar um arquivo de configuração:
+```
+yarn eslint --init
+
+How would you like to use ESLint? 
+To check syntax, find problems, and enforce code style
+
+What type of modules does your project use? 
+JavaScript modules (import/export)
+
+Which framework does your project use? 
+None of these
+
+Does your project use TypeScript? 
+No
+
+Where does your code run?
+Node
+
+How would you like to define a style for your project? 
+Use a popular style guide
+
+Which style guide do you want to follow? 
+Airbnb (https://github.com/airbnb/javascript)
+
+What format do you want your config file to be in? 
+JavaScript
+
+Would you like to install them now with npm? 
+Yes
+```
+Feito isso ele ira criar um arquivo deleto package-lock.json, que mapeia as novas dependencias, mas como estou usando yarn, então deleto o package-lock.json, e executo no terminal yarn para mapear as novas dependencias.
+
+Instalo no vscode a extensão do ESLint 
+E em settings.json 
+```
+"editor.rulers": [80,120],
+"eslint.autoFixOnSave": true,
+"editor.formatOnSave": false,
+"eslint.validate": [
+    {
+        "language": "javascript",
+        "autoFix": true
+    },
+    {
+        "language": "javascriptreact",
+        "autoFix": true
+    }
+]
+```
+E no arquivo .eslintrc.js, vamos sobrescrever algumas regras
+```
+rules: {
+    "class-methods-use-this":"off",//usar this nos métodos 
+    "no-param-reassign":"off",//para permitir alterar parametro
+    "camelcase":"off", // nossaVar, mas quero usar nossa_variavel
+    "no-unused-vars":[
+        "errors",{
+            "argsIgnorePattern":"next"
+            }
+        ]
+},
+```
+no-unused-vars, existe uma regra, que não pode declarar variaveis que não vou usar, mas no caso do next preciso declarar mesmo sem utilizar
+
+
+
