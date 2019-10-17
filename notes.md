@@ -62,7 +62,7 @@ User.create({
 - Jamais será utilizado em produção
 
 
-## EsLint, Prettier e editor de código
+## EsLint, Prettier e EditorConfig
 
 Para veririficar se o nosso código está seguindo o padrão, instalamos o ESLint:
 ```
@@ -72,37 +72,37 @@ Para inicializar um arquivo de configuração:
 ```
 yarn eslint --init
 
-How would you like to use ESLint? 
+How would you like to use ESLint?
 To check syntax, find problems, and enforce code style
 
-What type of modules does your project use? 
+What type of modules does your project use?
 JavaScript modules (import/export)
 
-Which framework does your project use? 
+Which framework does your project use?
 None of these
 
-Does your project use TypeScript? 
+Does your project use TypeScript?
 No
 
 Where does your code run?
 Node
 
-How would you like to define a style for your project? 
+How would you like to define a style for your project?
 Use a popular style guide
 
-Which style guide do you want to follow? 
+Which style guide do you want to follow?
 Airbnb (https://github.com/airbnb/javascript)
 
-What format do you want your config file to be in? 
+What format do you want your config file to be in?
 JavaScript
 
-Would you like to install them now with npm? 
+Would you like to install them now with npm?
 Yes
 ```
 Feito isso ele ira criar um arquivo deleto package-lock.json, que mapeia as novas dependencias, mas como estou usando yarn, então deleto o package-lock.json, e executo no terminal yarn para mapear as novas dependencias.
 
-Instalo no vscode a extensão do ESLint 
-E em settings.json 
+Instalo no vscode a extensão do ESLint
+E em settings.json
 ```
 "editor.rulers": [80,120],
 "eslint.autoFixOnSave": true,
@@ -121,11 +121,11 @@ E em settings.json
 E no arquivo .eslintrc.js, vamos sobrescrever algumas regras
 ```
 rules: {
-    "class-methods-use-this":"off",//usar this nos métodos 
+    "class-methods-use-this":"off",//usar this nos métodos
     "no-param-reassign":"off",//para permitir alterar parametro
     "camelcase":"off", // nossaVar, mas quero usar nossa_variavel
     "no-unused-vars":[
-        "errors",{
+        "error",{
             "argsIgnorePattern":"next"
             }
         ]
@@ -134,4 +134,92 @@ rules: {
 no-unused-vars, existe uma regra, que não pode declarar variaveis que não vou usar, mas no caso do next preciso declarar mesmo sem utilizar
 
 
+Intala o prettier:
+```
+yarn add prettier eslint-config-prettier eslint-plugin-prettier -D
+```
+O prettier ele deixa o nosso código mais bonito, e é diferente do EsLint, por exemplo checar que a linha está muito grande, o prettier é responsavel por isso.
+
+Depois de instalado preciso configurar .eslintrc.js, para trabalhar com o prettier
+```
+module.exports = {
+  ...
+  extends: ['airbnb-base','prettier'],
+  plugins:['prettier'],
+  ...
+  rules: {
+    "prettier/prettier":"error",
+    ...
+  },
+};
+```
+"prettier/prettier":"error" basicamente dizendo que todos os problemas que o prettier tiver, eu quero que ele me retorne error no EsLint
+
+Mas tem algumas reguinhas que gostaria de sobrescrever do prettier, então criamos o arquivo .prettierrc
+
+```
+{
+    "singleQuote": true,
+    "trailingComma": "es5"
+}
+```
+
+Ao invés de acessar arquivo por arquivo, e salvar para aplicar as regras do EsLint, podemos fazer o seguinte, para fixar tudo de forma automática:
+
+Para arquivos dentro de src com extensão .js
+
+```
+yarn eslint --fix src --ext .js
+```
+
+Instalados a extensão no vscode, EditorConfig, depois de instalar isso, vamos na raiz do projeto, clica com o botão direito e "generate .editorconfig", ele faz uma configuração igual entre todos os editores como vscode, atom, sublime e tudo mais
+
+
+## Configurando o sequelize
+
+Primeira coisa instalamos o sequelize, e sequelize-cli que é uma interface de linha de comando, então usando comandos no terminal para criação de migrations, criar models e etc.
+
+```
+yarn sequelize
+yarn sequelize-cli -D
+```
+Feito isso, criamos um arquivo .sequelizerc, é basicamente um arquivo que vai exportar os caminhos os arquivos e pastas de configuração do database, e nele utilizamos a sintaxe CommonJS, que é sintaxe antes do import/export
+```
+const {resolve} =  require('path')
+module.exports = {
+    config: resolve(__dirname,'src','config','database.js'),
+    'models-path': resolve(__dirname,'src','config','models'),
+    'migrations-path': resolve(__dirname,'src','config','migrations'),
+    'seeders-path': resolve(__dirname,'src','config','seeds')
+}
+```
+E no arquivo src/config/database.js, esse arquivo vai ser acessado tanto pela nossa aplicação, quanto pelo sequelize-cli, então utilizamos a sintaxe CommonJS. Como vamos utilizar o dialect postgres, temos que instalar algumas dependências
+```
+yarn add pg  pg-hstore
+```
+No database.js
+
+`timestamps: true` => Vai armazenar a data de criação e edição de cada registro
+
+`underscored: true` => Quero definir o padrão de nomenclatura para tabelas como underscored, se tiver tivermos um model UserGroup ele vai criar uma tabela UserGroups, mas queremos que seja user_groups
+
+`underscoredAll: true` => E o all, não é para nome da tabela e sim nome de colunas e relacionamentos
+
+E agora podemos criar a nossa tabela
+
+```
+yarn sequelize migration:create --name=create-users
+```
+Configuramos a nossa migration
+
+Feito isso inicializamos o nosso container com o banco `docker start database`, e depois executamos no terminal
+```
+yarn sequelize db:migrate
+```
+Caso tenha cometido algum erro, posso executar o seguinte comando:
+```
+yarn sequelize db:migrate:undo // desfaz a última vez que rodei
+
+yarn sequelize db:migrate:undo:all // desfaz todas
+```
 
