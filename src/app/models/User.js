@@ -32,6 +32,14 @@ class User extends Model {
     // User.checkPassword, logo o this tem todos os dados do usuario
     return bcrypt.compare(password, this.password_hash);
   }
+
+  static associate(models) {
+    // belongsTo => pertence há...
+    // hasOne => teria o id do `usuario` dentro da tabela de `file`
+    // hasMany => teria o id do `usuario` em varios registros em `file`
+    // ou seja `file` pertece a `usuario`
+    this.belongsTo(models.File, { foreignKey: 'avatar_id' });
+  }
 }
 
 export default User;
