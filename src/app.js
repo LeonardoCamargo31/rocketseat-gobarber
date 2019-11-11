@@ -1,8 +1,8 @@
 // por padrão o node não suporta import/export
 // para isso existe o sucrase
 import express from 'express';
+import path from 'path';
 import routes from './routes';
-
 import './database';
 
 class App {
@@ -15,6 +15,11 @@ class App {
   middlewares() {
     // nossa aplicação suporta requisições no formato de json
     this.server.use(express.json());
+    // servir arquivos estaticos
+    this.server.use(
+      '/files',
+      express.static(path.resolve(__dirname, '..', 'tmp', 'uploads'))
+    );
   }
 
   routes() {

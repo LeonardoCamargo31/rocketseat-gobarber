@@ -38,7 +38,8 @@ class User extends Model {
     // hasOne => teria o id do `usuario` dentro da tabela de `file`
     // hasMany => teria o id do `usuario` em varios registros em `file`
     // ou seja `file` pertece a `usuario`
-    this.belongsTo(models.File, { foreignKey: 'avatar_id' });
+    this.belongsTo(models.File, { foreignKey: 'avatar_id', as: 'avatar' });
+    // apelido de avatar_id para avatar
   }
 }
 
