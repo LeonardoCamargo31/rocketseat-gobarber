@@ -28,7 +28,27 @@ Para ver se meu container está rodando, execulto o seguinte comando:
 docker ps
 ```
 
+### Instalando o mongo
 
+```
+docker run --name mongobarber -p 27017:27017 -d -t mongo
+```
+
+E para conferir se foi feito com sucesso acesse `http://localhost:27017/`.
+
+E terá a seguinte mensagem:
+```
+It looks like you are trying to access MongoDB over HTTP on the native driver port.
+```
+Em caso de erro, pode digitar o seguinte comando:
+```
+docker logs
+```
+
+Schemas são como models porem representados através de schemas do mongo no mongo não temos tabelas e sim schemas, que são quase a mesma coisa a diferença é que nas tabelas os dados são estruturados, as colunas são iguais para todos os registros no mongo tem meio que um schema free, liberdade de schema, um registro tem titulo enquanto outro não tem.
+
+
+Interface para visualizar os dados, temos o mongodb compass, é uma ferramenta criada pelo proprio mongo para vizualizar os dados, segue o link: https://docs.mongodb.com/compass/master/install/
 
 ## Sequelize
 
