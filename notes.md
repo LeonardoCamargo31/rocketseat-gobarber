@@ -243,3 +243,13 @@ yarn sequelize db:migrate:undo // desfaz a última vez que rodei
 yarn sequelize db:migrate:undo:all // desfaz todas
 ```
 
+## Fila
+
+Filas ou background jobs (trabalhos em segundo plano), podemos configurar serviços que ficam executando em segundo plano, executando essas tarefas que demandam mais tempo, mas que não modificam a resposta ao cliente. Para esse caso precisamos de um banco chave valor, e vamos utilizar o Redis.
+
+O Redis ele é um banco não relacional assim como o mongodb, mas com Redis não conseguimos ter schemas ou estrutura de dados, e apenas conseguimos salvar chave e valor, sendo muito performatico, e permitindo salvar milhares de registros.
+
+```
+docker run --name redisbarber -p 6379:6379 -d -t redis:alpine
+```
+ O bee-queue é basicamente uma ferramenta de fila dentro do node, extramamente performatico, porem mais simples e menos robusto.
