@@ -35,8 +35,13 @@ class Queue {
     jobs.forEach(job => {
       // this.queues[CancellationMail] a minha chave unica
       const { bee, handle } = this.queues[job.key];
-      bee.process(handle); // para processar o job
+      // em caso de erro ele vai chamar nossa função handleFailure
+      bee.on('failed', this.handleFailure).process(handle); // para processar o job
     });
+  }
+
+  handleFailure(job, err) {
+    console.log(`Queue ${job.queue.name}: FAILED`, err);
   }
 }
 
