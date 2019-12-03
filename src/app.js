@@ -1,3 +1,4 @@
+import 'dotenv/config';
 // por padrão o node não suporta import/export
 // para isso existe o sucrase
 import express from 'express';
@@ -48,9 +49,12 @@ class App {
     // quando temos um middleware com 4 parametros
     // o express já entende como um middleware de tratamento de exceções
     this.server.use(async (err, req, res, next) => {
-      // youth faz uma tratativa das mensagens de erro, para uma melhor vizualização
-      const errors = await new Youth(err, req).toJSON();
-      return res.status(500).json(errors);
+      if (process.env.NODE_ENV === 'development') {
+        // youth faz uma tratativa das mensagens de erro, para uma melhor vizualização
+        const errors = await new Youth(err, req).toJSON();
+        return res.status(500).json(errors);
+      }
+      return res.status(500).json({ error: 'Internal server error' });
     });
   }
 }
